@@ -1,11 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // TEMP: Replace with real auth later (JWT check)
+  const isLoggedIn = false; // Change to true to test Profile visibility
+
   return (
     <main className="min-h-screen bg-gray-50 text-gray-900">
 
       {/* Navbar */}
-      <nav className="flex justify-between items-center px-10 py-4 bg-white shadow-sm">
+      <nav className="flex justify-between items-center px-10 py-4 bg-white shadow-sm relative">
         <h2 className="text-xl font-bold">Smart Travel Planner</h2>
 
         <div className="flex gap-6 items-center">
@@ -17,11 +25,50 @@ export default function Home() {
           </Link>
 
           <Link
+            href="/dashboard"
+            className="text-gray-700 hover:text-blue-600 transition"
+          >
+            Dashboard
+          </Link>
+
+          <Link
             href="/register"
             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
           >
             Sign Up
           </Link>
+
+          {/* Hamburger Menu */}
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex flex-col justify-center items-center w-8 h-8 ml-2"
+            >
+              <span className="w-6 h-0.5 bg-gray-800 mb-1"></span>
+              <span className="w-6 h-0.5 bg-gray-800 mb-1"></span>
+              <span className="w-6 h-0.5 bg-gray-800"></span>
+            </button>
+
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-40 bg-white border rounded-lg shadow-lg">
+                {isLoggedIn && (
+                  <Link
+                    href="/profile"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                  >
+                    Profile
+                  </Link>
+                )}
+
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 hover:bg-gray-100"
+                >
+                  Settings
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 

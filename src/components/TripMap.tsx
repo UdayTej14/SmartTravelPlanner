@@ -54,17 +54,17 @@ export default function TripMap({ destination, itinerary }: Props) {
         center: { lat: 0, lng: 0 },
         mapTypeId: "roadmap",
         styles: [
-          { elementType: "geometry", stylers: [{ color: "#1a1a2e" }] },
-          { elementType: "labels.text.stroke", stylers: [{ color: "#1a1a2e" }] },
-          { elementType: "labels.text.fill", stylers: [{ color: "#a0a0b8" }] },
-          { featureType: "road", elementType: "geometry", stylers: [{ color: "#2a2a3a" }] },
-          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#606078" }] },
-          { featureType: "water", elementType: "geometry", stylers: [{ color: "#0d1b2a" }] },
-          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#4f7fff" }] },
-          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#16161f" }] },
-          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#0f2318" }] },
-          { featureType: "transit", elementType: "geometry", stylers: [{ color: "#2a2a3a" }] },
-          { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#3a3a4a" }] },
+          { elementType: "geometry", stylers: [{ color: "#1a1510" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#1a1510" }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#c4b9b0" }] },
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#2e2a25" }] },
+          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#857870" }] },
+          { featureType: "water", elementType: "geometry", stylers: [{ color: "#0d0b09" }] },
+          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#f97316" }] },
+          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#1d1a17" }] },
+          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#141210" }] },
+          { featureType: "transit", elementType: "geometry", stylers: [{ color: "#2e2a25" }] },
+          { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#3f3930" }] },
         ],
       });
 
@@ -167,17 +167,17 @@ export default function TripMap({ destination, itinerary }: Props) {
         // Info window
         const infoWindow = new google.maps.InfoWindow({
           content: `
-            <div style="background:#16161f;color:#f0f0f5;padding:12px;border-radius:10px;max-width:220px;font-family:Arial,sans-serif;">
+            <div style="background:#1d1a17;color:#faf7f4;padding:12px;border-radius:10px;max-width:220px;font-family:Arial,sans-serif;">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                 <div style="background:${color};color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px;flex-shrink:0;">${dayLoc.day}</div>
                 <div>
                   <p style="font-weight:bold;font-size:13px;margin:0;">${dayLoc.theme}</p>
-                  <p style="color:#a0a0b8;font-size:11px;margin:0;">${dayLoc.date}</p>
+                  <p style="color:#c4b9b0;font-size:11px;margin:0;">${dayLoc.date}</p>
                 </div>
               </div>
-              <p style="color:#a0a0b8;font-size:11px;margin-bottom:6px;">📍 ${dayLoc.locationName}</p>
-              <div style="border-top:1px solid #2a2a3a;padding-top:6px;">
-                ${dayLoc.activities.slice(0, 3).map((a) => `<p style="font-size:11px;color:#606078;margin:2px 0;">• ${a}</p>`).join("")}
+              <p style="color:#c4b9b0;font-size:11px;margin-bottom:6px;">📍 ${dayLoc.locationName}</p>
+              <div style="border-top:1px solid #2e2a25;padding-top:6px;">
+                ${dayLoc.activities.slice(0, 3).map((a) => `<p style="font-size:11px;color:#857870;margin:2px 0;">• ${a}</p>`).join("")}
               </div>
             </div>
           `,
@@ -223,7 +223,7 @@ export default function TripMap({ destination, itinerary }: Props) {
         {loading && (
           <div
             className="absolute inset-0 flex flex-col items-center justify-center"
-            style={{ background: "#1a1a2e" }}
+            style={{ background: "#1a1510" }}
           >
             <Loader2 size={28} className="spin mb-3" style={{ color: "var(--accent-blue)" }} />
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
@@ -236,7 +236,7 @@ export default function TripMap({ destination, itinerary }: Props) {
         )}
 
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#1a1a2e" }}>
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#1a1510" }}>
             <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>
           </div>
         )}

@@ -12,7 +12,7 @@ const FEATURES = [
   {
     icon: <Sparkles size={24} />,
     title: "AI Itinerary Generation",
-    description: "Powered by Gemini 1.5 Flash. Get a full day-by-day travel plan in under 10 seconds.",
+    description: "Powered by Gemini 2.5 Flash. Get a full day-by-day travel plan in under 10 seconds.",
     color: "#4f7fff",
   },
   {
@@ -125,7 +125,7 @@ export default function Home() {
           }}
         >
           <Zap size={14} />
-          Powered by Gemini 1.5 Flash AI
+          Powered by Gemini 2.5 Flash AI
         </div>
 
         <h1 className="text-5xl md:text-7xl font-bold max-w-4xl leading-tight mb-6" style={{ color: "var(--text-primary)" }}>

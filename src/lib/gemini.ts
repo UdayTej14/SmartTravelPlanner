@@ -34,7 +34,7 @@ export interface DayPlan {
 
 export interface MonthlyRating {
   month: string;
-  rating: number; // 1-5
+  rating: number;
   label: "Peak" | "High" | "Shoulder" | "Low" | "Avoid";
   reason: string;
   avgTemp: string;
@@ -124,15 +124,90 @@ IMPORTANT for monthlyRatings:
 
   const result = await geminiModel.generateContent(prompt);
   const text = result.response.text();
-
   const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
   return JSON.parse(cleaned) as TripPlan;
 }
 
+// ─── Chat with trip assistant ─────────────────────────────────────────────
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatResponse {
+  text: string;
+  packingAdditions?: string[];
+  packingRemovals?: string[];
+}
+
+export async function chatWithTripAssistant(
+  trip: {
+    destination: string;
+    days: number;
+    travelers: number;
+    budget: string;
+    interests: string[];
+    plan: TripPlan;
+  },
+  history: ChatMessage[],
+  userMessage: string
+): Promise<ChatResponse> {
+  const systemContext =
+    "You are a helpful travel assistant for a trip to " + trip.destination + ".\n" +
+    "Trip details: " + trip.days + " days, " + trip.travelers + " traveler(s), " + trip.budget + " budget. " +
+    "Interests: " + trip.interests.join(", ") + ".\n" +
+    "Total estimated cost: " + trip.plan.totalEstimatedCost + ".\n\n" +
+    "You can help with:\n" +
+    "- Budget advice and cost breakdowns\n" +
+    "- Suggesting packing list additions or removals\n" +
+    "- Local tips and activity recommendations\n" +
+    "- Answering questions about the itinerary\n\n" +
+    "If the user wants to ADD or REMOVE items from the packing list, include a PACKING_UPDATE block " +
+    "at the very end of your response in this exact format (nothing after it):\n" +
+    'PACKING_UPDATE:{"add":["item1","item2"],"remove":["item3"]}\n\n' +
+    "Keep responses concise, friendly, and under 120 words unless more detail is requested.";
+
+  const conversationHistory = history
+    .map((m) => (m.role === "user" ? "User" : "Assistant") + ": " + m.content)
+    .join("\n");
+
+  const prompt =
+    systemContext +
+    "\n\n" +
+    (conversationHistory ? "Previous conversation:\n" + conversationHistory + "\n\n" : "") +
+    "User: " + userMessage;
+
+  const result = await geminiModel.generateContent(prompt);
+  const raw = result.response.text().trim();
+
+  // Parse optional packing update block
+  const packingMatch = raw.match(/PACKING_UPDATE:(\{[\s\S]*?\})\s*$/);
+  let packingAdditions: string[] | undefined;
+  let packingRemovals: string[] | undefined;
+  let cleanText = raw;
+
+  if (packingMatch) {
+    try {
+      const update = JSON.parse(packingMatch[1]);
+      if (Array.isArray(update.add) && update.add.length > 0) packingAdditions = update.add;
+      if (Array.isArray(update.remove) && update.remove.length > 0) packingRemovals = update.remove;
+      cleanText = raw.replace(/PACKING_UPDATE:\{[\s\S]*?\}\s*$/, "").trim();
+    } catch {
+      // ignore JSON parse errors — return raw text
+    }
+  }
+
+  return { text: cleanText, packingAdditions, packingRemovals };
+}
+
+// ─── Standalone packing list generator ───────────────────────────────────
+
 export async function generatePackingList(destination: string, days: number, activities: string[]): Promise<string[]> {
-  const prompt = `Generate a smart packing list for a ${days}-day trip to ${destination}.
-Activities: ${activities.join(", ")}.
-Return ONLY a JSON array of strings, no markdown. Example: ["Item 1", "Item 2"]`;
+  const prompt =
+    "Generate a smart packing list for a " + days + "-day trip to " + destination + ".\n" +
+    "Activities: " + activities.join(", ") + ".\n" +
+    'Return ONLY a JSON array of strings, no markdown. Example: ["Item 1", "Item 2"]';
 
   const result = await geminiModel.generateContent(prompt);
   const text = result.response.text().replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();

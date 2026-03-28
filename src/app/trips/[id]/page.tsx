@@ -5,15 +5,17 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useAuth } from "@/context/AuthContext";
-import { getTripById } from "@/lib/firestore";
+import { getTripById, updateTrip } from "@/lib/firestore";
 import type { Trip } from "@/types";
 import type { DayPlan } from "@/lib/gemini";
 import CurrencyConverter from "@/components/CurrencyConverter";
 import TripMap from "@/components/TripMap";
+import EditTripModal from "@/components/EditTripModal";
+import TripChatbot from "@/components/TripChatbot";
 import {
   Plane, ArrowLeft, MapPin, Calendar, Users, Clock,
   DollarSign, Lightbulb, Package, Phone, Coffee,
-  Utensils, Moon, CheckSquare, ExternalLink
+  Utensils, Moon, CheckSquare, ExternalLink, Pencil
 } from "lucide-react";
 
 // ─── Day card in sidebar ───────────────────────────────────────────────────
@@ -197,6 +199,8 @@ export default function TripDetailPage() {
   const [fetching, setFetching] = useState(true);
   const [activeDay, setActiveDay] = useState(0);
   const [activeTab, setActiveTab] = useState<"itinerary" | "overview" | "packing">("itinerary");
+  const [editOpen, setEditOpen] = useState(false);
+  const [packingList, setPackingList] = useState<string[]>([]);
 
   useEffect(() => {
     if (!loading && !user) router.push("/login");
@@ -209,6 +213,7 @@ export default function TripDetailPage() {
         const data = await getTripById(id);
         if (!data) { toast.error("Trip not found"); router.push("/dashboard"); return; }
         setTrip(data);
+        setPackingList(data.plan?.packingList ?? []);
       } catch {
         toast.error("Failed to load trip");
       } finally {
@@ -230,6 +235,23 @@ export default function TripDetailPage() {
   }
 
   if (!trip) return null;
+
+  const handlePackingUpdate = (additions: string[], removals: string[]) => {
+    setPackingList((prev) => {
+      const withRemovals = prev.filter(
+        (item) => !removals.some((r) => item.toLowerCase().includes(r.toLowerCase()))
+      );
+      const newItems = additions.filter(
+        (a) => !withRemovals.some((item) => item.toLowerCase() === a.toLowerCase())
+      );
+      const updated = [...withRemovals, ...newItems];
+      // Persist to Firestore in background
+      updateTrip(trip.id, { plan: { ...trip.plan, packingList: updated } }).catch(() => {});
+      return updated;
+    });
+    if (additions.length > 0) toast.success(`Added ${additions.length} packing item${additions.length > 1 ? "s" : ""}!`);
+    if (removals.length > 0) toast.success(`Removed ${removals.length} item${removals.length > 1 ? "s" : ""} from packing list`);
+  };
 
   const { plan } = trip;
   const currentDay = plan.itinerary?.[activeDay];
@@ -253,15 +275,24 @@ export default function TripDetailPage() {
             {trip.destination}
           </span>
         </div>
-        <a
-          href={googleMapsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all"
-          style={{ border: "1px solid var(--border)", color: "var(--text-secondary)" }}
-        >
-          <ExternalLink size={14} /> Maps
-        </a>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setEditOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all"
+            style={{ border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+          >
+            <Pencil size={14} /> Edit
+          </button>
+          <a
+            href={googleMapsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all"
+            style={{ border: "1px solid var(--border)", color: "var(--text-secondary)" }}
+          >
+            <ExternalLink size={14} /> Maps
+          </a>
+        </div>
       </nav>
 
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-8">
@@ -481,11 +512,14 @@ export default function TripDetailPage() {
         {activeTab === "packing" && (
           <div className="fade-in">
             <div className="card p-6">
-              <h3 className="text-lg font-bold mb-6 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+              <h3 className="text-lg font-bold mb-2 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
                 <Package size={18} style={{ color: "var(--accent-purple)" }} /> Packing List for {trip.destination}
               </h3>
+              <p className="text-sm mb-6" style={{ color: "var(--text-muted)" }}>
+                Ask the AI assistant to add or remove items — it will update this list automatically.
+              </p>
               <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {plan.packingList?.map((item, i) => (
+                {packingList.map((item, i) => (
                   <PackingItem key={i} item={item} />
                 ))}
               </div>
@@ -493,6 +527,24 @@ export default function TripDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Edit Trip Modal */}
+      {editOpen && (
+        <EditTripModal
+          trip={trip}
+          onClose={() => setEditOpen(false)}
+          onSaved={(updated) => {
+            setTrip(updated);
+            setPackingList(updated.plan?.packingList ?? []);
+          }}
+        />
+      )}
+
+      {/* AI Trip Chatbot */}
+      <TripChatbot
+        trip={trip}
+        onPackingUpdate={handlePackingUpdate}
+      />
     </main>
   );
 }

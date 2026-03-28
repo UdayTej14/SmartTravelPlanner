@@ -10,7 +10,7 @@ import { useTripStore } from "@/store/tripStore";
 import type { Trip } from "@/types";
 import {
   Plane, Plus, MapPin, Calendar, Users, Trash2,
-  LogOut, Globe, Sparkles, Clock
+  LogOut, Globe, Sparkles, Clock, Pencil
 } from "lucide-react";
 
 const BUDGET_COLORS: Record<string, string> = {
@@ -62,14 +62,24 @@ function TripCard({ trip, onDelete }: { trip: Trip; onDelete: (id: string) => vo
         >
           🌍
         </div>
-        <button
-          onClick={handleDelete}
-          disabled={deleting}
-          className="opacity-0 group-hover:opacity-100 transition-opacity p-2 rounded-lg"
-          style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
-        >
-          <Trash2 size={14} />
-        </button>
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={(e) => { e.stopPropagation(); router.push(`/trips/${trip.id}`); }}
+            className="p-2 rounded-lg transition-colors"
+            style={{ background: "rgba(249,115,22,0.1)", color: "var(--accent-blue)" }}
+            title="Edit trip"
+          >
+            <Pencil size={14} />
+          </button>
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="p-2 rounded-lg"
+            style={{ background: "rgba(239,68,68,0.1)", color: "#ef4444" }}
+          >
+            <Trash2 size={14} />
+          </button>
+        </div>
       </div>
 
       <h3 className="text-xl font-bold mb-1" style={{ color: "var(--text-primary)" }}>

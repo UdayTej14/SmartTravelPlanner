@@ -172,10 +172,10 @@ export async function chatWithTripAssistant(
     "If the user wants to ADD or REMOVE packing list items, include this at the very end:\n" +
     'PACKING_UPDATE:{"add":["item1"],"remove":["item2"]}\n\n' +
     "If the user wants to CHANGE, MODIFY, or UPDATE activities/meals/accommodation for specific days, " +
-    "include the updated day(s) as complete JSON objects at the very end:\n" +
-    'PLAN_UPDATE:[{"day":N,"date":"...","theme":"...","activities":[{"time":"...","activity":"...","description":"...","location":"...","cost":"...","tips":"..."}],"meals":{"breakfast":"...","lunch":"...","dinner":"..."},"accommodation":"...","estimatedDailyCost":"..."}]\n\n' +
-    "Only include days that actually change. Return complete valid day objects.\n" +
-    "Keep responses concise, friendly, and under 130 words unless detail is requested.";
+    "write your conversational reply FIRST, then append the update block on its own line with NO text after it:\n" +
+    'PLAN_UPDATE:[{"day":N,"date":"same date as original","theme":"new theme","activities":[{"time":"9:00 AM","activity":"...","description":"...","location":"...","cost":"...","tips":"..."}],"meals":{"breakfast":"...","lunch":"...","dinner":"..."},"accommodation":"...","estimatedDailyCost":"..."}]\n\n' +
+    "Rules for PLAN_UPDATE: include ONLY the days that change; every field is required; no trailing text after the closing ].\n" +
+    "Keep conversational replies concise and friendly (under 100 words).";
 
   const conversationHistory = history
     .map((m) => (m.role === "user" ? "User" : "Assistant") + ": " + m.content)
@@ -188,37 +188,51 @@ export async function chatWithTripAssistant(
     "User: " + userMessage;
 
   const result = await geminiModel.generateContent(prompt);
-  const raw = result.response.text().trim();
+  // Strip any markdown code fences the model might wrap around the output
+  const raw = result.response.text().replace(/```[\w]*\n?/g, "").trim();
 
   let cleanText = raw;
   let packingAdditions: string[] | undefined;
   let packingRemovals: string[] | undefined;
   let planUpdates: DayPlan[] | undefined;
 
+  // Balanced-bracket extractor — avoids lazy-regex stopping at nested ] or }
+  const extractBlock = (text: string, marker: string, open: string, close: string): string | null => {
+    const idx = text.indexOf(marker);
+    if (idx === -1) return null;
+    const start = text.indexOf(open, idx + marker.length);
+    if (start === -1) return null;
+    let depth = 0;
+    for (let i = start; i < text.length; i++) {
+      if (text[i] === open)  depth++;
+      if (text[i] === close) { depth--; if (depth === 0) return text.slice(start, i + 1); }
+    }
+    return null;
+  };
+
   // Parse PACKING_UPDATE
-  const packingMatch = raw.match(/PACKING_UPDATE:(\{[\s\S]*?\})/);
-  if (packingMatch) {
+  const packingJson = extractBlock(raw, "PACKING_UPDATE:", "{", "}");
+  if (packingJson) {
     try {
-      const update = JSON.parse(packingMatch[1]);
-      if (Array.isArray(update.add) && update.add.length > 0) packingAdditions = update.add;
-      if (Array.isArray(update.remove) && update.remove.length > 0) packingRemovals = update.remove;
+      const update = JSON.parse(packingJson);
+      if (Array.isArray(update.add)    && update.add.length    > 0) packingAdditions = update.add;
+      if (Array.isArray(update.remove) && update.remove.length > 0) packingRemovals  = update.remove;
+      cleanText = cleanText.replace("PACKING_UPDATE:" + packingJson, "").trim();
     } catch { /* ignore */ }
   }
 
-  // Parse PLAN_UPDATE
-  const planMatch = raw.match(/PLAN_UPDATE:(\[[\s\S]*?\])/);
-  if (planMatch) {
+  // Parse PLAN_UPDATE — uses [ ] as outer delimiters; activities:[] inside are handled
+  // correctly because the balanced counter tracks every [ and ] independently.
+  const planJson = extractBlock(raw, "PLAN_UPDATE:", "[", "]");
+  if (planJson) {
     try {
-      const parsed = JSON.parse(planMatch[1]);
-      if (Array.isArray(parsed) && parsed.length > 0) planUpdates = parsed as DayPlan[];
+      const parsed = JSON.parse(planJson);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        planUpdates = parsed as DayPlan[];
+        cleanText = cleanText.replace("PLAN_UPDATE:" + planJson, "").trim();
+      }
     } catch { /* ignore */ }
   }
-
-  // Remove update blocks from displayed text
-  cleanText = raw
-    .replace(/PACKING_UPDATE:\{[\s\S]*?\}/, "")
-    .replace(/PLAN_UPDATE:\[[\s\S]*?\]/, "")
-    .trim();
 
   return { text: cleanText, packingAdditions, packingRemovals, planUpdates };
 }

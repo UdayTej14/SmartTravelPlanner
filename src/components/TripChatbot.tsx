@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { chatWithTripAssistant } from "@/lib/gemini";
-import type { ChatMessage, TripPlan } from "@/lib/gemini";
+import type { ChatMessage, TripPlan, DayPlan } from "@/lib/gemini";
 import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
 
 interface Props {
@@ -15,16 +15,17 @@ interface Props {
     plan: TripPlan;
   };
   onPackingUpdate?: (additions: string[], removals: string[]) => void;
+  onPlanUpdate?: (updatedDays: DayPlan[]) => void;
 }
 
 const QUICK_PROMPTS = [
-  "What should I pack for this trip?",
+  "What should I pack?",
   "Give me budget tips",
-  "What are must-try local foods?",
-  "Is this a good time to visit?",
+  "Must-try local foods?",
+  "Change day 1 to museums",
 ];
 
-export default function TripChatbot({ trip, onPackingUpdate }: Props) {
+export default function TripChatbot({ trip, onPackingUpdate, onPlanUpdate }: Props) {
   const [open, setOpen] = useState(false);
   const [history, setHistory] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
@@ -54,6 +55,10 @@ export default function TripChatbot({ trip, onPackingUpdate }: Props) {
 
       if (onPackingUpdate && (response.packingAdditions?.length || response.packingRemovals?.length)) {
         onPackingUpdate(response.packingAdditions ?? [], response.packingRemovals ?? []);
+      }
+
+      if (onPlanUpdate && response.planUpdates?.length) {
+        onPlanUpdate(response.planUpdates);
       }
     } catch {
       setHistory((prev) => [
@@ -88,7 +93,7 @@ export default function TripChatbot({ trip, onPackingUpdate }: Props) {
             height: "480px",
             background: "var(--bg-card)",
             border: "1px solid var(--border)",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.5)",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.4)",
           }}
         >
           {/* Header */}
@@ -99,34 +104,35 @@ export default function TripChatbot({ trip, onPackingUpdate }: Props) {
             <div className="w-8 h-8 rounded-full gradient-btn flex items-center justify-center flex-shrink-0">
               <Sparkles size={15} className="text-white" />
             </div>
-            <div>
+            <div className="flex-1">
               <p className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>
                 Trip Assistant
               </p>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {trip.destination}
+                {trip.destination} · Can edit your plan
               </p>
             </div>
           </div>
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-            {/* Welcome message */}
+            {/* Welcome + quick prompts */}
             {history.length === 0 && (
               <div className="space-y-3">
-                <div
-                  className="flex gap-2 items-start"
-                >
-                  <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: "var(--chat-bot)", border: "1px solid var(--border)" }}>
+                <div className="flex gap-2 items-start">
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                    style={{ background: "var(--chat-bot)", border: "1px solid var(--border)" }}
+                  >
                     <Bot size={14} style={{ color: "var(--accent-blue)" }} />
                   </div>
                   <div
                     className="px-3 py-2.5 rounded-2xl rounded-tl-sm text-sm max-w-[85%]"
                     style={{ background: "var(--chat-bot)", color: "var(--text-secondary)" }}
                   >
-                    Hi! I&apos;m your AI travel assistant for your {trip.days}-day trip to{" "}
+                    Hi! I&apos;m your travel assistant for{" "}
                     <strong style={{ color: "var(--text-primary)" }}>{trip.destination}</strong>.
-                    Ask me anything about your itinerary, packing, budget, or local tips!
+                    I can answer questions, update your packing list, or <strong>change days in your itinerary</strong>!
                   </div>
                 </div>
 
@@ -170,7 +176,7 @@ export default function TripChatbot({ trip, onPackingUpdate }: Props) {
                   )}
                 </div>
                 <div
-                  className="px-3 py-2.5 rounded-2xl text-sm max-w-[85%] whitespace-pre-wrap"
+                  className="px-3 py-2.5 text-sm max-w-[85%] whitespace-pre-wrap"
                   style={{
                     background: msg.role === "user" ? "var(--chat-user)" : "var(--chat-bot)",
                     color: msg.role === "user" ? "white" : "var(--text-secondary)",
@@ -192,8 +198,8 @@ export default function TripChatbot({ trip, onPackingUpdate }: Props) {
                   <Bot size={14} style={{ color: "var(--accent-blue)" }} />
                 </div>
                 <div
-                  className="px-3 py-3 rounded-2xl rounded-tl-sm flex items-center gap-1"
-                  style={{ background: "var(--chat-bot)" }}
+                  className="px-3 py-3 flex items-center gap-1"
+                  style={{ background: "var(--chat-bot)", borderRadius: "18px 18px 18px 4px" }}
                 >
                   <span className="w-2 h-2 rounded-full typing-dot" style={{ background: "var(--text-muted)" }} />
                   <span className="w-2 h-2 rounded-full typing-dot" style={{ background: "var(--text-muted)" }} />
@@ -218,7 +224,7 @@ export default function TripChatbot({ trip, onPackingUpdate }: Props) {
                 border: "1px solid var(--border)",
                 color: "var(--text-primary)",
               }}
-              placeholder="Ask me anything..."
+              placeholder='e.g. "Change day 2 to beaches"'
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}

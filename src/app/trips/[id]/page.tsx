@@ -12,6 +12,7 @@ import CurrencyConverter from "@/components/CurrencyConverter";
 import TripMap from "@/components/TripMap";
 import EditTripModal from "@/components/EditTripModal";
 import TripChatbot from "@/components/TripChatbot";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   Plane, ArrowLeft, MapPin, Calendar, Users, Clock,
   DollarSign, Lightbulb, Package, Phone, Coffee,
@@ -236,6 +237,20 @@ export default function TripDetailPage() {
 
   if (!trip) return null;
 
+  const handlePlanUpdate = (updatedDays: DayPlan[]) => {
+    setTrip((prev) => {
+      if (!prev) return prev;
+      const newItinerary = prev.plan.itinerary.map((day) => {
+        const update = updatedDays.find((d) => d.day === day.day);
+        return update ?? day;
+      });
+      const updated = { ...prev, plan: { ...prev.plan, itinerary: newItinerary } };
+      updateTrip(prev.id, { plan: updated.plan }).catch(() => {});
+      return updated;
+    });
+    toast.success(`Updated ${updatedDays.length} day${updatedDays.length > 1 ? "s" : ""} in your itinerary!`);
+  };
+
   const handlePackingUpdate = (additions: string[], removals: string[]) => {
     setPackingList((prev) => {
       const withRemovals = prev.filter(
@@ -276,6 +291,7 @@ export default function TripDetailPage() {
           </span>
         </div>
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <button
             onClick={() => setEditOpen(true)}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all"
@@ -544,6 +560,7 @@ export default function TripDetailPage() {
       <TripChatbot
         trip={trip}
         onPackingUpdate={handlePackingUpdate}
+        onPlanUpdate={handlePlanUpdate}
       />
     </main>
   );

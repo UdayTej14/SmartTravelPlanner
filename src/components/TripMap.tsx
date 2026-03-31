@@ -49,11 +49,12 @@ export default function TripMap({ destination, itinerary }: Props) {
 
     loader.load().then(async () => {
       const google = window.google;
+      const isLight = document.documentElement.getAttribute("data-theme") === "light";
       const map = new google.maps.Map(mapRef.current!, {
         zoom: 12,
         center: { lat: 0, lng: 0 },
         mapTypeId: "roadmap",
-        styles: [
+        styles: isLight ? [] : [
           { elementType: "geometry", stylers: [{ color: "#1a1510" }] },
           { elementType: "labels.text.stroke", stylers: [{ color: "#1a1510" }] },
           { elementType: "labels.text.fill", stylers: [{ color: "#c4b9b0" }] },
@@ -67,6 +68,11 @@ export default function TripMap({ destination, itinerary }: Props) {
           { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#3f3930" }] },
         ],
       });
+      const infoBg = isLight ? "#ffffff" : "#1d1a17";
+      const infoText = isLight ? "#1a1208" : "#faf7f4";
+      const infoMuted = isLight ? "#6b7280" : "#c4b9b0";
+      const infoBorder = isLight ? "#e5e7eb" : "#2e2a25";
+      const infoSub = isLight ? "#9ca3af" : "#857870";
 
       const geocoder = new google.maps.Geocoder();
       const dayLocations: DayLocation[] = [];
@@ -167,17 +173,17 @@ export default function TripMap({ destination, itinerary }: Props) {
         // Info window
         const infoWindow = new google.maps.InfoWindow({
           content: `
-            <div style="background:#1d1a17;color:#faf7f4;padding:12px;border-radius:10px;max-width:220px;font-family:Arial,sans-serif;">
+            <div style="background:${infoBg};color:${infoText};padding:12px;border-radius:10px;max-width:220px;font-family:Arial,sans-serif;">
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
                 <div style="background:${color};color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:13px;flex-shrink:0;">${dayLoc.day}</div>
                 <div>
                   <p style="font-weight:bold;font-size:13px;margin:0;">${dayLoc.theme}</p>
-                  <p style="color:#c4b9b0;font-size:11px;margin:0;">${dayLoc.date}</p>
+                  <p style="color:${infoMuted};font-size:11px;margin:0;">${dayLoc.date}</p>
                 </div>
               </div>
-              <p style="color:#c4b9b0;font-size:11px;margin-bottom:6px;">📍 ${dayLoc.locationName}</p>
-              <div style="border-top:1px solid #2e2a25;padding-top:6px;">
-                ${dayLoc.activities.slice(0, 3).map((a) => `<p style="font-size:11px;color:#857870;margin:2px 0;">• ${a}</p>`).join("")}
+              <p style="color:${infoMuted};font-size:11px;margin-bottom:6px;">📍 ${dayLoc.locationName}</p>
+              <div style="border-top:1px solid ${infoBorder};padding-top:6px;">
+                ${dayLoc.activities.slice(0, 3).map((a) => `<p style="font-size:11px;color:${infoSub};margin:2px 0;">• ${a}</p>`).join("")}
               </div>
             </div>
           `,
@@ -223,7 +229,7 @@ export default function TripMap({ destination, itinerary }: Props) {
         {loading && (
           <div
             className="absolute inset-0 flex flex-col items-center justify-center"
-            style={{ background: "#1a1510" }}
+            style={{ background: "var(--bg-card)" }}
           >
             <Loader2 size={28} className="spin mb-3" style={{ color: "var(--accent-blue)" }} />
             <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
@@ -236,7 +242,7 @@ export default function TripMap({ destination, itinerary }: Props) {
         )}
 
         {error && (
-          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "#1a1510" }}>
+          <div className="absolute inset-0 flex items-center justify-center" style={{ background: "var(--bg-card)" }}>
             <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>
           </div>
         )}

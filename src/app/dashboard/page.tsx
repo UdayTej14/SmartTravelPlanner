@@ -12,6 +12,7 @@ import {
   Plane, Plus, MapPin, Calendar, Users, Trash2,
   LogOut, Globe, Sparkles, Clock, Pencil
 } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const BUDGET_COLORS: Record<string, string> = {
   budget: "#22c55e",
@@ -230,6 +231,7 @@ export default function DashboardPage() {
             )}
             <span className="hidden sm:block text-sm">{user.displayName?.split(" ")[0]}</span>
           </Link>
+          <ThemeToggle />
           <button
             onClick={handleSignOut}
             className="p-2 rounded-xl transition-all"

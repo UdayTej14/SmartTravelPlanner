@@ -55,24 +55,24 @@ export default function TripMap({ destination, itinerary }: Props) {
         center: { lat: 0, lng: 0 },
         mapTypeId: "roadmap",
         styles: isLight ? [] : [
-          { elementType: "geometry", stylers: [{ color: "#1a1510" }] },
-          { elementType: "labels.text.stroke", stylers: [{ color: "#1a1510" }] },
-          { elementType: "labels.text.fill", stylers: [{ color: "#c4b9b0" }] },
-          { featureType: "road", elementType: "geometry", stylers: [{ color: "#2e2a25" }] },
-          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#857870" }] },
-          { featureType: "water", elementType: "geometry", stylers: [{ color: "#0d0b09" }] },
-          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#f97316" }] },
-          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#1d1a17" }] },
-          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#141210" }] },
-          { featureType: "transit", elementType: "geometry", stylers: [{ color: "#2e2a25" }] },
-          { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#3f3930" }] },
+          { elementType: "geometry", stylers: [{ color: "#060d18" }] },
+          { elementType: "labels.text.stroke", stylers: [{ color: "#060d18" }] },
+          { elementType: "labels.text.fill", stylers: [{ color: "#8ab5d0" }] },
+          { featureType: "road", elementType: "geometry", stylers: [{ color: "#1c3550" }] },
+          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#4a7898" }] },
+          { featureType: "water", elementType: "geometry", stylers: [{ color: "#020912" }] },
+          { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#06b6d4" }] },
+          { featureType: "poi", elementType: "geometry", stylers: [{ color: "#0c1a2e" }] },
+          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#071322" }] },
+          { featureType: "transit", elementType: "geometry", stylers: [{ color: "#1c3550" }] },
+          { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#254869" }] },
         ],
       });
-      const infoBg = isLight ? "#ffffff" : "#1d1a17";
-      const infoText = isLight ? "#1a1208" : "#faf7f4";
-      const infoMuted = isLight ? "#6b7280" : "#c4b9b0";
-      const infoBorder = isLight ? "#e5e7eb" : "#2e2a25";
-      const infoSub = isLight ? "#9ca3af" : "#857870";
+      const infoBg = isLight ? "#ffffff" : "#112336";
+      const infoText = isLight ? "#042238" : "#e2eff8";
+      const infoMuted = isLight ? "#4a7898" : "#8ab5d0";
+      const infoBorder = isLight ? "#e0f2fe" : "#1c3550";
+      const infoSub = isLight ? "#6b94b0" : "#4a7898";
 
       const geocoder = new google.maps.Geocoder();
       const dayLocations: DayLocation[] = [];

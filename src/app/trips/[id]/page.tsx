@@ -26,7 +26,7 @@ function DayCard({ day, isActive, onClick }: { day: DayPlan; isActive: boolean; 
       onClick={onClick}
       className="w-full text-left p-4 rounded-xl transition-all"
       style={{
-        background: isActive ? "rgba(79,127,255,0.15)" : "var(--bg-card)",
+        background: isActive ? "rgba(14,165,233,0.12)" : "var(--bg-card)",
         border: `1px solid ${isActive ? "var(--accent-blue)" : "var(--border)"}`,
       }}
     >
@@ -80,7 +80,7 @@ function PackingItem({ item }: { item: string }) {
 const LABEL_COLORS: Record<string, { bg: string; text: string }> = {
   Peak:     { bg: "rgba(239,68,68,0.15)",   text: "#ef4444" },
   High:     { bg: "rgba(245,158,11,0.15)",  text: "#f59e0b" },
-  Shoulder: { bg: "rgba(79,127,255,0.15)",  text: "#4f7fff" },
+  Shoulder: { bg: "rgba(14,165,233,0.15)",  text: "#0ea5e9" },
   Low:      { bg: "rgba(34,197,94,0.15)",   text: "#22c55e" },
   Avoid:    { bg: "rgba(100,100,120,0.15)", text: "#606078" },
 };
@@ -432,7 +432,7 @@ export default function TripDetailPage() {
                     {currentDay.activities?.map((activity, idx) => (
                       <div key={idx} className="flex gap-4 p-4 rounded-xl" style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)" }}>
                         <div className="flex flex-col items-center gap-1">
-                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: "rgba(79,127,255,0.15)", color: "var(--accent-blue)" }}>
+                          <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style={{ background: "rgba(14,165,233,0.12)", color: "var(--accent-blue)" }}>
                             {idx + 1}
                           </div>
                           {idx < (currentDay.activities?.length ?? 0) - 1 && (

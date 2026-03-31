@@ -144,8 +144,8 @@ export default function TripChatbot({ trip, onPackingUpdate, onPlanUpdate }: Pro
                       onClick={() => send(q)}
                       className="text-xs px-2.5 py-1.5 rounded-full transition-all"
                       style={{
-                        background: "rgba(249,115,22,0.1)",
-                        border: "1px solid rgba(249,115,22,0.3)",
+                        background: "rgba(14,165,233,0.1)",
+                        border: "1px solid rgba(14,165,233,0.25)",
                         color: "var(--accent-blue)",
                       }}
                     >

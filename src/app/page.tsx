@@ -121,8 +121,8 @@ export default function Home() {
         <div
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6"
           style={{
-            background: "rgba(79,127,255,0.1)",
-            border: "1px solid rgba(79,127,255,0.3)",
+            background: "rgba(14,165,233,0.08)",
+            border: "1px solid rgba(14,165,233,0.25)",
             color: "var(--accent-blue)",
           }}
         >
@@ -225,7 +225,7 @@ export default function Home() {
               <div key={item.step} className="relative">
                 <div
                   className="text-5xl font-black mb-4 select-none"
-                  style={{ color: "rgba(79,127,255,0.12)" }}
+                  style={{ color: "rgba(14,165,233,0.1)" }}
                 >
                   {item.step}
                 </div>

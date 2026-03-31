@@ -170,7 +170,7 @@ export default function CurrencyConverter({ totalCostString, days, travelers }: 
       {/* Custom Amount Converter */}
       <div
         className="p-4 rounded-xl"
-        style={{ background: "rgba(79,127,255,0.06)", border: "1px solid rgba(79,127,255,0.15)" }}
+        style={{ background: "rgba(14,165,233,0.06)", border: "1px solid rgba(14,165,233,0.12)" }}
       >
         <p className="text-xs font-medium mb-2 flex items-center gap-1" style={{ color: "var(--accent-blue)" }}>
           <TrendingUp size={12} /> Custom Amount Converter

@@ -170,7 +170,7 @@ export default function EditTripModal({ trip, onClose, onSaved }: Props) {
                   className="p-3 rounded-xl text-left transition-all"
                   style={{
                     border: `2px solid ${budget === opt.value ? "var(--accent-blue)" : "var(--border)"}`,
-                    background: budget === opt.value ? "rgba(249,115,22,0.08)" : "var(--bg-secondary)",
+                    background: budget === opt.value ? "rgba(14,165,233,0.08)" : "var(--bg-secondary)",
                   }}
                 >
                   <div className="text-lg mb-1">{opt.icon}</div>
@@ -195,7 +195,7 @@ export default function EditTripModal({ trip, onClose, onSaved }: Props) {
                   disabled={isBusy}
                   className="px-3 py-1.5 rounded-full text-xs font-medium transition-all"
                   style={{
-                    background: interests.includes(i) ? "rgba(249,115,22,0.15)" : "var(--bg-secondary)",
+                    background: interests.includes(i) ? "rgba(14,165,233,0.12)" : "var(--bg-secondary)",
                     border: `1px solid ${interests.includes(i) ? "var(--accent-blue)" : "var(--border)"}`,
                     color: interests.includes(i) ? "var(--accent-blue)" : "var(--text-secondary)",
                   }}

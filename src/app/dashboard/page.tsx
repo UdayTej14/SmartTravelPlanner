@@ -67,7 +67,7 @@ function TripCard({ trip, onDelete }: { trip: Trip; onDelete: (id: string) => vo
           <button
             onClick={(e) => { e.stopPropagation(); router.push(`/trips/${trip.id}`); }}
             className="p-2 rounded-lg transition-colors"
-            style={{ background: "rgba(249,115,22,0.1)", color: "var(--accent-blue)" }}
+            style={{ background: "rgba(14,165,233,0.1)", color: "var(--accent-blue)" }}
             title="Edit trip"
           >
             <Pencil size={14} />

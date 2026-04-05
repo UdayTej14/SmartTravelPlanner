@@ -13,6 +13,7 @@ import TripMap from "@/components/TripMap";
 import EditTripModal from "@/components/EditTripModal";
 import TripChatbot from "@/components/TripChatbot";
 import ThemeToggle from "@/components/ThemeToggle";
+import FlightSearch from "@/components/FlightSearch";
 import {
   Plane, ArrowLeft, MapPin, Calendar, Users, Clock,
   DollarSign, Lightbulb, Package, Phone, Coffee,
@@ -475,6 +476,13 @@ export default function TripDetailPage() {
             {plan.itinerary?.length > 0 && (
               <TripMap destination={trip.destination} itinerary={plan.itinerary} />
             )}
+
+            {/* Flight Search */}
+            <FlightSearch
+              destination={trip.destination}
+              startDate={trip.startDate}
+              travelers={trip.travelers}
+            />
 
             {/* Currency Converter */}
             <CurrencyConverter

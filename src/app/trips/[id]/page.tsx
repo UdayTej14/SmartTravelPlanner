@@ -14,6 +14,7 @@ import EditTripModal from "@/components/EditTripModal";
 import TripChatbot from "@/components/TripChatbot";
 import ThemeToggle from "@/components/ThemeToggle";
 import FlightSearch from "@/components/FlightSearch";
+import EditDayModal from "@/components/EditDayModal";
 import {
   Plane, ArrowLeft, MapPin, Calendar, Users, Clock,
   DollarSign, Lightbulb, Package, Phone, Coffee,
@@ -202,6 +203,7 @@ export default function TripDetailPage() {
   const [activeDay, setActiveDay] = useState(0);
   const [activeTab, setActiveTab] = useState<"itinerary" | "overview" | "packing">("itinerary");
   const [editOpen, setEditOpen] = useState(false);
+  const [editDayOpen, setEditDayOpen] = useState(false);
   const [packingList, setPackingList] = useState<string[]>([]);
 
   useEffect(() => {
@@ -250,6 +252,19 @@ export default function TripDetailPage() {
       return updated;
     });
     toast.success(`Updated ${updatedDays.length} day${updatedDays.length > 1 ? "s" : ""} in your itinerary!`);
+  };
+
+  const handleDayEdit = (updated: DayPlan) => {
+    setTrip((prev) => {
+      if (!prev) return prev;
+      const newItinerary = prev.plan.itinerary.map((d) =>
+        d.day === updated.day ? updated : d
+      );
+      const updatedTrip = { ...prev, plan: { ...prev.plan, itinerary: newItinerary } };
+      updateTrip(prev.id, { plan: updatedTrip.plan }).catch(() => {});
+      return updatedTrip;
+    });
+    toast.success("Day updated successfully!");
   };
 
   const handlePackingUpdate = (additions: string[], removals: string[]) => {
@@ -397,9 +412,22 @@ export default function TripDetailPage() {
                       </h2>
                       <p className="text-sm" style={{ color: "var(--text-muted)" }}>{currentDay.date}</p>
                     </div>
-                    <span className="text-sm font-medium px-3 py-1 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>
-                      {currentDay.estimatedDailyCost}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium px-3 py-1 rounded-full" style={{ background: "rgba(34,197,94,0.1)", color: "#22c55e" }}>
+                        {currentDay.estimatedDailyCost}
+                      </span>
+                      <button
+                        onClick={() => setEditDayOpen(true)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all"
+                        style={{
+                          background: "rgba(14,165,233,0.08)",
+                          border: "1px solid rgba(14,165,233,0.2)",
+                          color: "var(--accent-blue)",
+                        }}
+                      >
+                        <Pencil size={12} /> Edit Day
+                      </button>
+                    </div>
                   </div>
 
                   {/* Meals */}
@@ -561,6 +589,15 @@ export default function TripDetailPage() {
             setTrip(updated);
             setPackingList(updated.plan?.packingList ?? []);
           }}
+        />
+      )}
+
+      {/* Edit Day Modal */}
+      {editDayOpen && currentDay && (
+        <EditDayModal
+          day={currentDay}
+          onClose={() => setEditDayOpen(false)}
+          onSave={handleDayEdit}
         />
       )}
 

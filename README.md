@@ -2,7 +2,7 @@
 
 An AI-powered travel planning web app that generates personalized day-by-day itineraries in seconds. Built with Next.js, Firebase, and Google Gemini.
 
-🔗 **Live App:** [your-vercel-url.vercel.app](https://your-vercel-url.vercel.app)
+🔗 **Live App:** aitravelplan.vercel.app
 
 ---
 

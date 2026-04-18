@@ -13,7 +13,7 @@ An AI-powered travel planning web app that generates personalized day-by-day iti
 - **Inline Day Editing** — Edit any day's theme, meals, accommodation, and activities directly from the UI
 - **AI Chatbot** — Modify the live itinerary through natural language ("change day 2 to beach activities")
 - **Interactive Route Map** — Google Maps integration with geocoded markers and polyline route overlays
-- **Live Flight Prices** — Amadeus API integration for real-time airfare estimates with Google Flights booking links
+- **Live Flight Prices** —  real-time airfare estimates with Google Flights booking links
 - **Packing List** — Auto-generated and editable via chatbot
 - **Currency Converter** — Built-in converter for the destination's currency
 - **Best Time to Visit** — Monthly calendar with ratings, weather, and local events
@@ -31,7 +31,7 @@ An AI-powered travel planning web app that generates personalized day-by-day iti
 | Auth | Firebase Authentication (Google OAuth) |
 | Database | Firebase Firestore |
 | Maps | Google Maps JavaScript API |
-| Flight Prices | Amadeus for Developers API |
+| Flight Prices | Google Flights |
 | Deployment | Vercel (CI/CD from GitHub) |
 | Styling | Custom CSS with CSS variables |
 
@@ -66,10 +66,6 @@ NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 # Google Maps
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_maps_api_key
 
-# Amadeus (server-side only)
-AMADEUS_CLIENT_ID=your_amadeus_client_id
-AMADEUS_CLIENT_SECRET=your_amadeus_client_secret
-```
 
 ### 3. Run locally
 
@@ -114,7 +110,6 @@ src/
 | Google Gemini | [aistudio.google.com](https://aistudio.google.com) | Yes |
 | Firebase | [console.firebase.google.com](https://console.firebase.google.com) | Yes |
 | Google Maps | [console.cloud.google.com](https://console.cloud.google.com) | $200/month credit |
-| Amadeus | [developers.amadeus.com](https://developers.amadeus.com) | 2000 req/month |
 
 ---
 

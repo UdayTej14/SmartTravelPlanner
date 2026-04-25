@@ -50,6 +50,11 @@ export default function PlanPage() {
   const isMultiCity = validDestinations.length > 1;
   const primaryDestination = validDestinations.join(", ");
 
+  const normalise = (s: string) => s.trim().toLowerCase();
+  const hasDuplicates = validDestinations.some(
+    (d, i) => validDestinations.findIndex((x) => normalise(x) === normalise(d)) !== i
+  );
+
   const addDestination = () => {
     if (destinations.length < 5) setDestinations((prev) => [...prev, ""]);
   };
@@ -64,7 +69,7 @@ export default function PlanPage() {
   };
 
   const canProceed = () => {
-    if (step === 0) return validDestinations.length >= 1;
+    if (step === 0) return validDestinations.length >= 1 && !hasDuplicates;
     if (step === 1) return days >= 1 && days <= 30 && travelers >= 1;
     if (step === 2) return !!budget;
     if (step === 3) return interests.length >= 1;
@@ -264,29 +269,46 @@ export default function PlanPage() {
                 </div>
               )}
 
+              {/* Duplicate warning */}
+              {hasDuplicates && (
+                <div
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl mb-4 text-sm"
+                  style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "#ef4444" }}
+                >
+                  Each city can only be added once. Please remove the duplicate.
+                </div>
+              )}
+
               {/* Quick city chips */}
               <div className="flex flex-wrap gap-2">
-                {["Tokyo", "Paris", "Bali", "New York", "Rome", "Bangkok"].map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => {
-                      const emptyIdx = destinations.findIndex((x) => x.trim() === "");
-                      if (emptyIdx >= 0) {
-                        updateDestination(emptyIdx, d);
-                      } else if (destinations.length < 5) {
-                        setDestinations((prev) => [...prev, d]);
-                      }
-                    }}
-                    className="px-3 py-1.5 rounded-lg text-sm transition-all"
-                    style={{
-                      background: destinations.includes(d) ? "rgba(79,127,255,0.2)" : "var(--bg-card)",
-                      border: `1px solid ${destinations.includes(d) ? "var(--accent-blue)" : "var(--border)"}`,
-                      color: destinations.includes(d) ? "var(--accent-blue)" : "var(--text-secondary)",
-                    }}
-                  >
-                    {d}
-                  </button>
-                ))}
+                {["Tokyo", "Paris", "Bali", "New York", "Rome", "Bangkok"].map((d) => {
+                  const alreadySelected = destinations.some((x) => normalise(x) === normalise(d));
+                  return (
+                    <button
+                      key={d}
+                      disabled={alreadySelected}
+                      onClick={() => {
+                        if (alreadySelected) return;
+                        const emptyIdx = destinations.findIndex((x) => x.trim() === "");
+                        if (emptyIdx >= 0) {
+                          updateDestination(emptyIdx, d);
+                        } else if (destinations.length < 5) {
+                          setDestinations((prev) => [...prev, d]);
+                        }
+                      }}
+                      className="px-3 py-1.5 rounded-lg text-sm transition-all"
+                      style={{
+                        background: alreadySelected ? "rgba(79,127,255,0.2)" : "var(--bg-card)",
+                        border: `1px solid ${alreadySelected ? "var(--accent-blue)" : "var(--border)"}`,
+                        color: alreadySelected ? "var(--accent-blue)" : "var(--text-secondary)",
+                        opacity: alreadySelected ? 0.5 : 1,
+                        cursor: alreadySelected ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      {d}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

@@ -152,6 +152,7 @@ export interface ChatResponse {
 export async function chatWithTripAssistant(
   trip: {
     destination: string;
+    destinations?: string[];
     days: number;
     travelers: number;
     budget: string;
@@ -165,8 +166,14 @@ export async function chatWithTripAssistant(
     .map((d) => "Day " + d.day + " (" + d.date + "): " + d.theme + " — " + d.activities.map((a) => a.activity).join(", "))
     .join("\n");
 
+  const isMultiCity = trip.destinations && trip.destinations.length > 1;
+  const destinationLabel = isMultiCity
+    ? "a multi-city trip covering " + trip.destinations!.join(" → ")
+    : "a trip to " + trip.destination;
+
   const systemContext =
-    "You are a helpful travel assistant for a trip to " + trip.destination + ".\n" +
+    "You are a helpful travel assistant for " + destinationLabel + ".\n" +
+    (isMultiCity ? "Cities in order: " + trip.destinations!.join(", ") + ".\n" : "") +
     "Trip details: " + trip.days + " days, " + trip.travelers + " traveler(s), " + trip.budget + " budget. " +
     "Interests: " + trip.interests.join(", ") + ".\n" +
     "Total estimated cost: " + trip.plan.totalEstimatedCost + ".\n\n" +

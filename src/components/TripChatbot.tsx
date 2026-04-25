@@ -8,6 +8,7 @@ import { MessageCircle, X, Send, Bot, User, Sparkles } from "lucide-react";
 interface Props {
   trip: {
     destination: string;
+    destinations?: string[];
     days: number;
     travelers: number;
     budget: string;
@@ -109,7 +110,9 @@ export default function TripChatbot({ trip, onPackingUpdate, onPlanUpdate }: Pro
                 Trip Assistant
               </p>
               <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                {trip.destination} · Can edit your plan
+                {trip.destinations && trip.destinations.length > 1
+                  ? trip.destinations.join(" → ")
+                  : trip.destination} · Can edit your plan
               </p>
             </div>
           </div>
@@ -131,7 +134,11 @@ export default function TripChatbot({ trip, onPackingUpdate, onPlanUpdate }: Pro
                     style={{ background: "var(--chat-bot)", color: "var(--text-secondary)" }}
                   >
                     Hi! I&apos;m your travel assistant for{" "}
-                    <strong style={{ color: "var(--text-primary)" }}>{trip.destination}</strong>.
+                    <strong style={{ color: "var(--text-primary)" }}>
+                      {trip.destinations && trip.destinations.length > 1
+                        ? trip.destinations.join(" → ")
+                        : trip.destination}
+                    </strong>.
                     I can answer questions, update your packing list, or <strong>change days in your itinerary</strong>!
                   </div>
                 </div>

@@ -59,9 +59,9 @@ function TripCard({ trip, onDelete }: { trip: Trip; onDelete: (id: string) => vo
       <div className="flex justify-between items-start mb-4">
         <div
           className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-          style={{ background: `${BUDGET_COLORS[trip.budget]}15` }}
+          style={{ background: `${BUDGET_COLORS[trip.budget]}15`, color: BUDGET_COLORS[trip.budget] }}
         >
-          🌍
+          <Globe size={20} />
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
@@ -248,7 +248,7 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
           <div>
             <h1 className="text-3xl font-bold" style={{ color: "var(--text-primary)" }}>
-              Welcome back, {user.displayName?.split(" ")[0]} 👋
+              Welcome back, {user.displayName?.split(" ")[0]}
             </h1>
             <p className="mt-1" style={{ color: "var(--text-secondary)" }}>
               {trips.length === 0
@@ -307,7 +307,7 @@ export default function DashboardPage() {
           </div>
         ) : trips.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-6xl mb-6 float">✈️</div>
+            <div className="mb-6"><Plane size={48} style={{ color: "var(--accent-blue)", margin: "0 auto", display: "block" }} /></div>
             <h3 className="text-2xl font-bold mb-3" style={{ color: "var(--text-primary)" }}>
               No trips yet!
             </h3>

@@ -147,7 +147,7 @@ export default function EditDayModal({ day, onClose, onSave }: Props) {
               {(["breakfast", "lunch", "dinner"] as const).map((meal) => (
                 <div key={meal}>
                   <p className="text-xs mb-1.5 capitalize" style={{ color: "var(--text-secondary)" }}>
-                    {meal === "breakfast" ? "🌅" : meal === "lunch" ? "☀️" : "🌙"} {meal}
+                    {meal}
                   </p>
                   <input
                     value={form.meals[meal]}
@@ -287,7 +287,7 @@ export default function EditDayModal({ day, onClose, onSave }: Props) {
                   </div>
 
                   <div>
-                    <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>💡 Tips (optional)</p>
+                    <p className="text-xs mb-1" style={{ color: "var(--text-muted)" }}>Tips (optional)</p>
                     <input
                       value={act.tips}
                       onChange={(e) => setActivity(idx, "tips", e.target.value)}

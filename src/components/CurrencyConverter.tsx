@@ -4,28 +4,28 @@ import { useState, useEffect } from "react";
 import { DollarSign, RefreshCw, TrendingUp } from "lucide-react";
 
 const CURRENCIES = [
-  { code: "USD", name: "US Dollar", symbol: "$", flag: "🇺🇸" },
-  { code: "EUR", name: "Euro", symbol: "€", flag: "🇪🇺" },
-  { code: "GBP", name: "British Pound", symbol: "£", flag: "🇬🇧" },
-  { code: "JPY", name: "Japanese Yen", symbol: "¥", flag: "🇯🇵" },
-  { code: "INR", name: "Indian Rupee", symbol: "₹", flag: "🇮🇳" },
-  { code: "AUD", name: "Australian Dollar", symbol: "A$", flag: "🇦🇺" },
-  { code: "CAD", name: "Canadian Dollar", symbol: "C$", flag: "🇨🇦" },
-  { code: "SGD", name: "Singapore Dollar", symbol: "S$", flag: "🇸🇬" },
-  { code: "AED", name: "UAE Dirham", symbol: "د.إ", flag: "🇦🇪" },
-  { code: "CNY", name: "Chinese Yuan", symbol: "¥", flag: "🇨🇳" },
-  { code: "CHF", name: "Swiss Franc", symbol: "Fr", flag: "🇨🇭" },
-  { code: "MXN", name: "Mexican Peso", symbol: "$", flag: "🇲🇽" },
-  { code: "BRL", name: "Brazilian Real", symbol: "R$", flag: "🇧🇷" },
-  { code: "KRW", name: "South Korean Won", symbol: "₩", flag: "🇰🇷" },
-  { code: "THB", name: "Thai Baht", symbol: "฿", flag: "🇹🇭" },
-  { code: "IDR", name: "Indonesian Rupiah", symbol: "Rp", flag: "🇮🇩" },
-  { code: "MYR", name: "Malaysian Ringgit", symbol: "RM", flag: "🇲🇾" },
-  { code: "PHP", name: "Philippine Peso", symbol: "₱", flag: "🇵🇭" },
-  { code: "ZAR", name: "South African Rand", symbol: "R", flag: "🇿🇦" },
-  { code: "TRY", name: "Turkish Lira", symbol: "₺", flag: "🇹🇷" },
-  { code: "SAR", name: "Saudi Riyal", symbol: "﷼", flag: "🇸🇦" },
-  { code: "NZD", name: "New Zealand Dollar", symbol: "NZ$", flag: "🇳🇿" },
+  { code: "USD", name: "US Dollar", symbol: "$", flag: "USD" },
+  { code: "EUR", name: "Euro", symbol: "€", flag: "EUR" },
+  { code: "GBP", name: "British Pound", symbol: "£", flag: "GBP" },
+  { code: "JPY", name: "Japanese Yen", symbol: "¥", flag: "JPY" },
+  { code: "INR", name: "Indian Rupee", symbol: "₹", flag: "INR" },
+  { code: "AUD", name: "Australian Dollar", symbol: "A$", flag: "AUD" },
+  { code: "CAD", name: "Canadian Dollar", symbol: "C$", flag: "CAD" },
+  { code: "SGD", name: "Singapore Dollar", symbol: "S$", flag: "SGD" },
+  { code: "AED", name: "UAE Dirham", symbol: "د.إ", flag: "AED" },
+  { code: "CNY", name: "Chinese Yuan", symbol: "¥", flag: "CNY" },
+  { code: "CHF", name: "Swiss Franc", symbol: "Fr", flag: "CHF" },
+  { code: "MXN", name: "Mexican Peso", symbol: "$", flag: "MXN" },
+  { code: "BRL", name: "Brazilian Real", symbol: "R$", flag: "BRL" },
+  { code: "KRW", name: "South Korean Won", symbol: "₩", flag: "KRW" },
+  { code: "THB", name: "Thai Baht", symbol: "฿", flag: "THB" },
+  { code: "IDR", name: "Indonesian Rupiah", symbol: "Rp", flag: "IDR" },
+  { code: "MYR", name: "Malaysian Ringgit", symbol: "RM", flag: "MYR" },
+  { code: "PHP", name: "Philippine Peso", symbol: "₱", flag: "PHP" },
+  { code: "ZAR", name: "South African Rand", symbol: "R", flag: "ZAR" },
+  { code: "TRY", name: "Turkish Lira", symbol: "₺", flag: "TRY" },
+  { code: "SAR", name: "Saudi Riyal", symbol: "﷼", flag: "SAR" },
+  { code: "NZD", name: "New Zealand Dollar", symbol: "NZ$", flag: "NZD" },
 ];
 
 interface Props {
@@ -111,7 +111,7 @@ export default function CurrencyConverter({ totalCostString, days, travelers }: 
         >
           {CURRENCIES.filter((c) => c.code !== "USD").map((c) => (
             <option key={c.code} value={c.code} style={{ background: "#16161f" }}>
-              {c.flag} {c.code} — {c.name}
+              {c.code} — {c.name}
             </option>
           ))}
         </select>
@@ -128,17 +128,17 @@ export default function CurrencyConverter({ totalCostString, days, travelers }: 
             {
               label: "Total per person",
               usdMin: min, usdMax: max,
-              icon: "👤",
+              icon: "",
             },
             {
               label: `Total for ${travelers} traveler${travelers > 1 ? "s" : ""}`,
               usdMin: min * travelers, usdMax: max * travelers,
-              icon: "👥",
+              icon: "",
             },
             {
               label: "Per day (avg)",
               usdMin: Math.round(min / days), usdMax: Math.round(max / days),
-              icon: "📅",
+              icon: "",
             },
           ].map((item) => (
             <div

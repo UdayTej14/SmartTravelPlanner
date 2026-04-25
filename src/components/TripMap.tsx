@@ -181,7 +181,7 @@ export default function TripMap({ destination, itinerary }: Props) {
                   <p style="color:${infoMuted};font-size:11px;margin:0;">${dayLoc.date}</p>
                 </div>
               </div>
-              <p style="color:${infoMuted};font-size:11px;margin-bottom:6px;">📍 ${dayLoc.locationName}</p>
+              <p style="color:${infoMuted};font-size:11px;margin-bottom:6px;">${dayLoc.locationName}</p>
               <div style="border-top:1px solid ${infoBorder};padding-top:6px;">
                 ${dayLoc.activities.slice(0, 3).map((a) => `<p style="font-size:11px;color:${infoSub};margin:2px 0;">• ${a}</p>`).join("")}
               </div>

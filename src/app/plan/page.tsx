@@ -59,7 +59,7 @@ export default function PlanPage() {
     setGenerating(true);
     setIsGenerating(true);
 
-    const toastId = toast.loading("🤖 Gemini AI is crafting your perfect itinerary...");
+    const toastId = toast.loading("Gemini AI is crafting your itinerary...");
 
     try {
       const plan = await generateTripPlan({
@@ -95,7 +95,7 @@ export default function PlanPage() {
         createdAt: new Date().toISOString(),
       });
 
-      toast.success("Your trip is ready! 🎉", { id: toastId });
+      toast.success("Your trip is ready!", { id: toastId });
       router.push(`/trips/${tripId}`);
     } catch (err) {
       console.error(err);
@@ -169,7 +169,7 @@ export default function PlanPage() {
           {/* Step 0: Destination */}
           {step === 0 && (
             <div>
-              <div className="text-5xl mb-4">🌍</div>
+              
               <h2 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
                 Where do you want to go?
               </h2>
@@ -193,15 +193,15 @@ export default function PlanPage() {
                 />
               </div>
               <div className="flex flex-wrap gap-2 mt-4">
-                {["Tokyo 🗼", "Paris 🗺️", "Bali 🌴", "New York 🗽", "Rome 🏛️", "Bangkok 🛕"].map((d) => (
+                {["Tokyo", "Paris", "Bali", "New York", "Rome", "Bangkok"].map((d) => (
                   <button
                     key={d}
-                    onClick={() => setDestination(d.split(" ")[0] + (d.includes("New") ? " York" : ""))}
+                    onClick={() => setDestination(d)}
                     className="px-3 py-1.5 rounded-lg text-sm transition-all"
                     style={{
-                      background: destination.startsWith(d.split(" ")[0]) ? "rgba(79,127,255,0.2)" : "var(--bg-card)",
-                      border: `1px solid ${destination.startsWith(d.split(" ")[0]) ? "var(--accent-blue)" : "var(--border)"}`,
-                      color: destination.startsWith(d.split(" ")[0]) ? "var(--accent-blue)" : "var(--text-secondary)",
+                      background: destination.startsWith(d) ? "rgba(79,127,255,0.2)" : "var(--bg-card)",
+                      border: `1px solid ${destination.startsWith(d) ? "var(--accent-blue)" : "var(--border)"}`,
+                      color: destination.startsWith(d) ? "var(--accent-blue)" : "var(--text-secondary)",
                     }}
                   >
                     {d}
@@ -214,7 +214,7 @@ export default function PlanPage() {
           {/* Step 1: Dates & Travelers */}
           {step === 1 && (
             <div>
-              <div className="text-5xl mb-4">📅</div>
+              
               <h2 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
                 When and how long?
               </h2>
@@ -300,7 +300,7 @@ export default function PlanPage() {
           {/* Step 2: Budget */}
           {step === 2 && (
             <div>
-              <div className="text-5xl mb-4">💰</div>
+              
               <h2 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
                 What&apos;s your budget?
               </h2>
@@ -335,7 +335,7 @@ export default function PlanPage() {
           {/* Step 3: Interests */}
           {step === 3 && (
             <div>
-              <div className="text-5xl mb-4">🎯</div>
+              
               <h2 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
                 What are your interests?
               </h2>
@@ -356,7 +356,7 @@ export default function PlanPage() {
                         color: selected ? "var(--accent-blue)" : "var(--text-secondary)",
                       }}
                     >
-                      {selected && "✓ "}
+                      
                       {interest}
                     </button>
                   );
@@ -373,7 +373,7 @@ export default function PlanPage() {
           {/* Step 4: Review & Generate */}
           {step === 4 && (
             <div>
-              <div className="text-5xl mb-4">🚀</div>
+              
               <h2 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
                 Ready to generate!
               </h2>
@@ -383,12 +383,12 @@ export default function PlanPage() {
 
               <div className="card p-6 space-y-4 mb-8">
                 {[
-                  { label: "Destination", value: destination, icon: "📍" },
-                  { label: "Start Date", value: new Date(startDate).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }), icon: "📅" },
-                  { label: "Duration", value: `${days} days`, icon: "⏱️" },
-                  { label: "Travelers", value: `${travelers} person${travelers > 1 ? "s" : ""}`, icon: "👥" },
-                  { label: "Budget", value: BUDGET_OPTIONS.find((b) => b.value === budget)?.label ?? budget, icon: "💰" },
-                  { label: "Interests", value: interests.join(", "), icon: "🎯" },
+                  { label: "Destination", value: destination, icon: "" },
+                  { label: "Start Date", value: new Date(startDate).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }), icon: "" },
+                  { label: "Duration", value: `${days} days`, icon: "" },
+                  { label: "Travelers", value: `${travelers} person${travelers > 1 ? "s" : ""}`, icon: "" },
+                  { label: "Budget", value: BUDGET_OPTIONS.find((b) => b.value === budget)?.label ?? budget, icon: "" },
+                  { label: "Interests", value: interests.join(", "), icon: "" },
                 ].map((item) => (
                   <div key={item.label} className="flex justify-between items-start gap-4">
                     <span className="text-sm flex items-center gap-2" style={{ color: "var(--text-muted)" }}>
@@ -421,7 +421,7 @@ export default function PlanPage() {
 
               {generating && (
                 <div className="mt-4 text-center text-sm fade-in" style={{ color: "var(--text-muted)" }}>
-                  ✨ This usually takes 5-15 seconds. Hang tight!
+                  This usually takes 5-15 seconds. Hang tight!
                 </div>
               )}
             </div>

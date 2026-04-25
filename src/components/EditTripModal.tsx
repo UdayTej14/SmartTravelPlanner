@@ -83,7 +83,7 @@ export default function EditTripModal({ trip, onClose, onSaved }: Props) {
           style={{ borderBottom: "1px solid var(--border)", background: "var(--bg-card)" }}
         >
           <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>
-            ✏️ Edit Trip
+            Edit Trip
           </h2>
           <button
             onClick={onClose}

@@ -63,7 +63,7 @@ function PackingItem({ item }: { item: string }) {
           border: `2px solid ${checked ? "#22c55e" : "var(--border-light)"}`,
         }}
       >
-        {checked && <span className="text-white text-xs">✓</span>}
+        {checked && <span className="text-white text-xs font-bold">✓</span>}
       </div>
       <span
         className="text-sm"
@@ -93,7 +93,7 @@ function MonthlyCalendar({ monthlyRatings }: { monthlyRatings: NonNullable<Trip[
   return (
     <div className="card p-6">
       <h3 className="text-lg font-bold mb-2 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
-        🗓️ Best Time to Visit
+        Best Time to Visit
       </h3>
       <p className="text-sm mb-5" style={{ color: "var(--text-secondary)" }}>
         Click any month for details on weather, events, and crowd levels.
@@ -184,7 +184,7 @@ function MonthlyCalendar({ monthlyRatings }: { monthlyRatings: NonNullable<Trip[
           </p>
           {monthlyRatings[selected].events !== "None" && (
             <p className="text-xs flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
-              🎉 {monthlyRatings[selected].events}
+              {monthlyRatings[selected].events}
             </p>
           )}
         </div>
@@ -333,7 +333,7 @@ export default function TripDetailPage() {
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-                {trip.destination} ✈️
+                {trip.destination}
               </h1>
               <div className="flex flex-wrap gap-4 text-sm mb-3" style={{ color: "var(--text-secondary)" }}>
                 <span className="flex items-center gap-1.5"><Calendar size={14} style={{ color: "var(--accent-blue)" }} />{trip.days} days</span>
@@ -387,7 +387,7 @@ export default function TripDetailPage() {
                 border: `1px solid ${activeTab === tab ? "var(--accent-blue)" : "var(--border)"}`,
               }}
             >
-              {tab === "itinerary" ? "📅 Itinerary" : tab === "overview" ? "🗺️ Map & Info" : "🎒 Packing List"}
+              {tab === "itinerary" ? "Itinerary" : tab === "overview" ? "Map & Info" : "Packing List"}
             </button>
           ))}
         </div>

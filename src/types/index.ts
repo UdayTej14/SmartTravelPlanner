@@ -37,7 +37,7 @@ export const INTEREST_OPTIONS = [
 ];
 
 export const BUDGET_OPTIONS = [
-  { value: "budget", label: "Budget", description: "Hostels, street food, free attractions", icon: "💰" },
-  { value: "moderate", label: "Moderate", description: "3-star hotels, casual dining, paid attractions", icon: "💳" },
-  { value: "luxury", label: "Luxury", description: "5-star hotels, fine dining, VIP experiences", icon: "👑" },
+  { value: "budget", label: "Budget", description: "Hostels, street food, free attractions", icon: "$" },
+  { value: "moderate", label: "Moderate", description: "3-star hotels, casual dining, paid attractions", icon: "~" },
+  { value: "luxury", label: "Luxury", description: "5-star hotels, fine dining, VIP experiences", icon: "*" },
 ] as const;

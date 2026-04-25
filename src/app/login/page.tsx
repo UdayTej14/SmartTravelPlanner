@@ -145,7 +145,7 @@ export default function LoginPage() {
             style={{ background: "rgba(79,127,255,0.08)", border: "1px solid rgba(79,127,255,0.2)" }}
           >
             <p style={{ color: "var(--text-secondary)" }}>
-              🔒 We use Google Sign-In for security. Your data is stored safely and never shared.
+              We use Google Sign-In for security. Your data is stored safely and never shared.
             </p>
           </div>
 

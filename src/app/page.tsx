@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import {
   Plane, Globe, Map, Star, Sparkles, Clock, Shield,
-  ArrowRight, CheckCircle, Zap
+  ArrowRight, CheckCircle, Zap, MapPin
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
@@ -49,12 +49,12 @@ const FEATURES = [
 ];
 
 const DESTINATIONS = [
-  { name: "Tokyo", emoji: "🗼", country: "Japan" },
-  { name: "Paris", emoji: "🗺️", country: "France" },
-  { name: "Bali", emoji: "🌴", country: "Indonesia" },
-  { name: "New York", emoji: "🗽", country: "USA" },
-  { name: "Rome", emoji: "🏛️", country: "Italy" },
-  { name: "Bangkok", emoji: "🛕", country: "Thailand" },
+  { name: "Tokyo", country: "Japan" },
+  { name: "Paris", country: "France" },
+  { name: "Bali", country: "Indonesia" },
+  { name: "New York", country: "USA" },
+  { name: "Rome", country: "Italy" },
+  { name: "Bangkok", country: "Thailand" },
 ];
 
 export default function Home() {
@@ -186,7 +186,12 @@ export default function Home() {
               className="card px-5 py-3 flex items-center gap-2 cursor-pointer"
               onClick={handleGetStarted}
             >
-              <span className="text-xl">{dest.emoji}</span>
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ background: "rgba(14,165,233,0.12)" }}
+              >
+                <MapPin size={13} style={{ color: "var(--accent-blue)" }} />
+              </div>
               <div>
                 <p className="font-medium text-sm" style={{ color: "var(--text-primary)" }}>{dest.name}</p>
                 <p className="text-xs" style={{ color: "var(--text-muted)" }}>{dest.country}</p>

@@ -11,7 +11,7 @@ import { useTripStore } from "@/store/tripStore";
 import { INTEREST_OPTIONS, BUDGET_OPTIONS } from "@/types";
 import {
   Plane, MapPin, Calendar, Users, Sparkles,
-  ArrowLeft, ArrowRight, CheckCircle, Loader2
+  ArrowLeft, ArrowRight, CheckCircle, Loader2, Plus, X, ArrowDown
 } from "lucide-react";
 
 const STEPS = ["Destination", "Dates & Travelers", "Budget", "Interests", "Generate"];
@@ -25,7 +25,7 @@ export default function PlanPage() {
   const [generating, setGenerating] = useState(false);
 
   // Form state
-  const [destination, setDestination] = useState("");
+  const [destinations, setDestinations] = useState<string[]>([""]);
   const [days, setDays] = useState(5);
   const [travelers, setTravelers] = useState(1);
   const [startDate, setStartDate] = useState(() => {
@@ -46,8 +46,25 @@ export default function PlanPage() {
     );
   };
 
+  const validDestinations = destinations.filter((d) => d.trim().length >= 2);
+  const isMultiCity = validDestinations.length > 1;
+  const primaryDestination = validDestinations.join(", ");
+
+  const addDestination = () => {
+    if (destinations.length < 5) setDestinations((prev) => [...prev, ""]);
+  };
+
+  const removeDestination = (idx: number) => {
+    if (destinations.length === 1) return;
+    setDestinations((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const updateDestination = (idx: number, value: string) => {
+    setDestinations((prev) => prev.map((d, i) => (i === idx ? value : d)));
+  };
+
   const canProceed = () => {
-    if (step === 0) return destination.trim().length >= 2;
+    if (step === 0) return validDestinations.length >= 1;
     if (step === 1) return days >= 1 && days <= 30 && travelers >= 1;
     if (step === 2) return !!budget;
     if (step === 3) return interests.length >= 1;
@@ -63,7 +80,8 @@ export default function PlanPage() {
 
     try {
       const plan = await generateTripPlan({
-        destination,
+        destination: primaryDestination,
+        destinations: isMultiCity ? validDestinations : undefined,
         days,
         travelers,
         budget,
@@ -73,7 +91,8 @@ export default function PlanPage() {
 
       const tripId = await saveTrip(user.uid, {
         userId: user.uid,
-        destination,
+        destination: primaryDestination,
+        destinations: isMultiCity ? validDestinations : undefined,
         days,
         travelers,
         budget,
@@ -85,7 +104,8 @@ export default function PlanPage() {
       addTrip({
         id: tripId,
         userId: user.uid,
-        destination,
+        destination: primaryDestination,
+        destinations: isMultiCity ? validDestinations : undefined,
         days,
         travelers,
         budget,
@@ -169,39 +189,99 @@ export default function PlanPage() {
           {/* Step 0: Destination */}
           {step === 0 && (
             <div>
-              
               <h2 className="text-3xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
                 Where do you want to go?
               </h2>
-              <p className="mb-8" style={{ color: "var(--text-secondary)" }}>
-                Enter a city, country, or region. Be as specific or broad as you like.
+              <p className="mb-6" style={{ color: "var(--text-secondary)" }}>
+                Add one city or multiple cities for a multi-destination trip. Up to 5 cities.
               </p>
-              <div className="relative">
-                <MapPin
-                  size={18}
-                  className="absolute left-4 top-1/2 -translate-y-1/2"
-                  style={{ color: "var(--text-muted)" }}
-                />
-                <input
-                  type="text"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && canProceed() && setStep(1)}
-                  placeholder="e.g., Tokyo, Japan or Bali"
-                  className="input-field pl-12 text-lg"
-                  autoFocus
-                />
+
+              {/* Destination inputs */}
+              <div className="space-y-3 mb-4">
+                {destinations.map((dest, idx) => (
+                  <div key={idx}>
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <MapPin
+                          size={16}
+                          className="absolute left-3 top-1/2 -translate-y-1/2"
+                          style={{ color: "var(--accent-blue)" }}
+                        />
+                        <input
+                          type="text"
+                          value={dest}
+                          onChange={(e) => updateDestination(idx, e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && canProceed() && setStep(1)}
+                          placeholder={idx === 0 ? "e.g., Tokyo, Japan" : `City ${idx + 1}`}
+                          className="input-field pl-9"
+                          autoFocus={idx === 0}
+                        />
+                      </div>
+                      {destinations.length > 1 && (
+                        <button
+                          onClick={() => removeDestination(idx)}
+                          className="p-2 rounded-xl transition-all flex-shrink-0"
+                          style={{ border: "1px solid var(--border)", color: "var(--text-muted)" }}
+                        >
+                          <X size={15} />
+                        </button>
+                      )}
+                    </div>
+                    {idx < destinations.length - 1 && (
+                      <div className="flex justify-center mt-2">
+                        <ArrowDown size={14} style={{ color: "var(--text-muted)" }} />
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-              <div className="flex flex-wrap gap-2 mt-4">
+
+              {/* Add city button */}
+              {destinations.length < 5 && (
+                <button
+                  onClick={addDestination}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium mb-6 transition-all"
+                  style={{
+                    border: "1px dashed var(--border)",
+                    color: "var(--text-muted)",
+                    background: "transparent",
+                    width: "100%",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Plus size={14} /> Add another city
+                </button>
+              )}
+
+              {/* Multi-city badge */}
+              {isMultiCity && (
+                <div
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl mb-4 text-sm"
+                  style={{ background: "rgba(14,165,233,0.08)", border: "1px solid rgba(14,165,233,0.2)", color: "var(--accent-blue)" }}
+                >
+                  <Plane size={14} />
+                  Multi-city trip — Gemini will distribute your days across {validDestinations.length} cities
+                </div>
+              )}
+
+              {/* Quick city chips */}
+              <div className="flex flex-wrap gap-2">
                 {["Tokyo", "Paris", "Bali", "New York", "Rome", "Bangkok"].map((d) => (
                   <button
                     key={d}
-                    onClick={() => setDestination(d)}
+                    onClick={() => {
+                      const emptyIdx = destinations.findIndex((x) => x.trim() === "");
+                      if (emptyIdx >= 0) {
+                        updateDestination(emptyIdx, d);
+                      } else if (destinations.length < 5) {
+                        setDestinations((prev) => [...prev, d]);
+                      }
+                    }}
                     className="px-3 py-1.5 rounded-lg text-sm transition-all"
                     style={{
-                      background: destination.startsWith(d) ? "rgba(79,127,255,0.2)" : "var(--bg-card)",
-                      border: `1px solid ${destination.startsWith(d) ? "var(--accent-blue)" : "var(--border)"}`,
-                      color: destination.startsWith(d) ? "var(--accent-blue)" : "var(--text-secondary)",
+                      background: destinations.includes(d) ? "rgba(79,127,255,0.2)" : "var(--bg-card)",
+                      border: `1px solid ${destinations.includes(d) ? "var(--accent-blue)" : "var(--border)"}`,
+                      color: destinations.includes(d) ? "var(--accent-blue)" : "var(--text-secondary)",
                     }}
                   >
                     {d}
@@ -383,7 +463,7 @@ export default function PlanPage() {
 
               <div className="card p-6 space-y-4 mb-8">
                 {[
-                  { label: "Destination", value: destination, icon: "" },
+                  { label: isMultiCity ? "Cities" : "Destination", value: primaryDestination, icon: "" },
                   { label: "Start Date", value: new Date(startDate).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }), icon: "" },
                   { label: "Duration", value: `${days} days`, icon: "" },
                   { label: "Travelers", value: `${travelers} person${travelers > 1 ? "s" : ""}`, icon: "" },

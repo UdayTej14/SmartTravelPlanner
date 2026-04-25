@@ -333,8 +333,23 @@ export default function TripDetailPage() {
           <div className="flex flex-col md:flex-row md:items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: "var(--text-primary)" }}>
-                {trip.destination}
+                {trip.destinations && trip.destinations.length > 1
+                  ? trip.destinations.join(" → ")
+                  : trip.destination}
               </h1>
+              {trip.destinations && trip.destinations.length > 1 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {trip.destinations.map((city, i) => (
+                    <span
+                      key={i}
+                      className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium"
+                      style={{ background: "rgba(14,165,233,0.1)", color: "var(--accent-blue)", border: "1px solid rgba(14,165,233,0.2)" }}
+                    >
+                      <MapPin size={10} /> {city}
+                    </span>
+                  ))}
+                </div>
+              )}
               <div className="flex flex-wrap gap-4 text-sm mb-3" style={{ color: "var(--text-secondary)" }}>
                 <span className="flex items-center gap-1.5"><Calendar size={14} style={{ color: "var(--accent-blue)" }} />{trip.days} days</span>
                 <span className="flex items-center gap-1.5"><Users size={14} style={{ color: "var(--accent-purple)" }} />{trip.travelers} traveler{trip.travelers > 1 ? "s" : ""}</span>

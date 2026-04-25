@@ -6,6 +6,7 @@ export const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.5-flash" 
 
 export interface TripPlanRequest {
   destination: string;
+  destinations?: string[];
   days: number;
   travelers: number;
   budget: "budget" | "moderate" | "luxury";
@@ -56,13 +57,19 @@ export interface TripPlan {
 }
 
 export async function generateTripPlan(request: TripPlanRequest): Promise<TripPlan> {
-  const prompt = `You are an expert travel planner. Create a detailed ${request.days}-day trip itinerary for ${request.destination}.
+  const isMultiCity = request.destinations && request.destinations.length > 1;
+  const destinationLine = isMultiCity
+    ? `a multi-city trip covering: ${request.destinations!.join(" → ")}. Distribute the ${request.days} days logically across all cities. Include a travel day between each city. Each day's activities should be in the city for that part of the trip.`
+    : `${request.destination}`;
+
+  const prompt = `You are an expert travel planner. Create a detailed ${request.days}-day trip itinerary for ${destinationLine}
 
 Details:
 - Travelers: ${request.travelers} person(s)
 - Budget level: ${request.budget}
 - Interests: ${request.interests.join(", ")}
 - Start date: ${request.startDate}
+${isMultiCity ? `- Cities in order: ${request.destinations!.join(", ")}` : ""}
 
 Return ONLY a valid JSON object (no markdown, no code blocks) with this exact structure:
 {

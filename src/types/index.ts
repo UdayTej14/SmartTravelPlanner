@@ -4,6 +4,7 @@ export interface Trip {
   id: string;
   userId: string;
   destination: string;
+  destinations?: string[];
   days: number;
   travelers: number;
   budget: "budget" | "moderate" | "luxury";

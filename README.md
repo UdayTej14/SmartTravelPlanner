@@ -124,8 +124,3 @@ To deploy your own instance:
 4. Add your Vercel domain to Firebase → Authentication → Authorized Domains
 
 ---
-
-## Author
-
-**Uday Tej Reddy Kusam**
-[GitHub](https://github.com/UdayTej14)
